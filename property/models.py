@@ -49,7 +49,7 @@ class Flat(models.Model):
         blank=True,
         db_index=True)
     new_building = models.BooleanField('Новостройка', db_index=True, null=True, blank=True)
-    likes = models.ManyToManyField(User, verbose_name='Кто лайкнул',related_name='liked_flat', blank=True)
+    likes = models.ManyToManyField(User, verbose_name='Кто лайкнул',related_name='liked_flats', blank=True)
     # owner_pure_phone = PhoneNumberField('Нормализованный номер владельца',null=True, blank=True)
     
     def __str__(self):
