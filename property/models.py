@@ -5,8 +5,6 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 
 class Flat(models.Model):
-    # owner = models.CharField('ФИО владельца', max_length=200)
-    # owners_phonenumber = models.CharField('Номер владельца', max_length=20)
     created_at = models.DateTimeField(
         'Когда создано объявление',
         default=timezone.now,
@@ -50,15 +48,13 @@ class Flat(models.Model):
         db_index=True)
     new_building = models.BooleanField('Новостройка', db_index=True, null=True, blank=True)
     likes = models.ManyToManyField(User, verbose_name='Кто лайкнул',related_name='liked_flats', blank=True)
-    # owner_pure_phone = PhoneNumberField('Нормализованный номер владельца',null=True, blank=True)
     
     def __str__(self):
         return f'{self.town}, {self.address} ({self.price}р.)'
 
-
 class Complaint(models.Model):
-    user = models.ForeignKey(User, verbose_name='Пользователь',on_delete=models.SET_NULL, null=True, blank=True)
-    flat = models.ForeignKey(Flat, verbose_name='Квартира',on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(User, verbose_name='Пользователь',related_name="complaints",on_delete=models.SET_NULL, null=True, blank=True)
+    flat = models.ForeignKey(Flat, verbose_name='Квартира',related_name="complaints",on_delete=models.SET_NULL, null=True, blank=True)
     text = models.TextField('Текст жалобы', blank=True)
 
     def __str__(self):
@@ -68,7 +64,7 @@ class Owner(models.Model):
     owner = models.CharField('ФИО владельца', max_length=200)
     owners_phonenumber = models.CharField('Номер владельца', max_length=20)
     owner_pure_phone = PhoneNumberField('Нормализованный номер владельца',null=True, blank=True)
-    flat = models.ManyToManyField(Flat, verbose_name='Квартира', related_name="flat_owner")
+    flat = models.ManyToManyField(Flat, verbose_name='Квартира', related_name="owned_flats")
 
     def __str__(self):
         return f'{self.owner}'
