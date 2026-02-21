@@ -8,7 +8,13 @@ def convert_to_pure_phonenumbers(apps, schema_editor):
     for flat in Flat.objects.filter(owners_phonenumber='+70000000000'):
         if not flat.owners_phonenumber:
             continue
-        parse_phone = phonenumbers.parse(flat.owners_phonenumber, 'RU')
+        try:
+            parse_phone = phonenumbers.parse(flat.owners_phonenumber, 'RU')
+        except NumberParseException as e:
+            print(f'Неверный формат номера у квартиры {flat.id}')
+            print(f'Ошибка {e}')
+            continue
+
         flat.owner_pure_phone = phonenumbers.format_number(parse_phone, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
         flat.save()
 
